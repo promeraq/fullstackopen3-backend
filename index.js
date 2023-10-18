@@ -41,7 +41,7 @@ morgan.format("custom", (tokens, req, res) => {
 
   // Si es una solicitud POST, añade el cuerpo de la respuesta
   if (req.method === "POST" && req.body) {
-    result += ` ${JSON.stringify(req.body.content)}`;
+    result += ` ${JSON.stringify(req.body)}`;
   }
 
   return result;
@@ -83,21 +83,22 @@ const generateId = () => {
 app.post("/api/persons", (request, response) => {
   const id = generateId();
   const body = request.body;
-  const found = persons.find((person) => person.name === body.content.name);
-  if (!body.content.name || !body.content.number) {
-    return response.status(400).json({
-      error: "name or phone are missing",
-    });
-  } else if (found) {
+  const found = persons.find((person) => person.name === body.name);
+
+  if (found) {
     return response.status(400).json({
       error: "name must be unique",
     });
-  }
+  } /* else if ((body && !body.name) || !body.number) {
+    return response.status(404).json({
+      error: "name or phone are missing",
+    });
+  } */
 
   const person = {
     id: generateId(),
-    name: body.content.name,
-    number: body.content.number,
+    name: body.name,
+    number: body.number,
   };
 
   persons = persons.concat(person);
