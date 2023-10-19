@@ -56,9 +56,9 @@ app.use(morgan("tiny"));
 // Respuesta morgan(':method :url :status :res[content-length] - :response-time ms')
 app.use(morgan("custom"));
 
-app.get("/", (request, response) => {
+/* app.get("/", (request, response) => {
   response.send("<h1>Welcome!</h1>");
-});
+}); */
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
