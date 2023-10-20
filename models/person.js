@@ -17,8 +17,8 @@ mongoose
 // Definimos un esquema para una "person".
 // Un esquema representa la estructura de los documentos dentro de una colección en MongoDB.
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: { type: String, minlength: 3, required: true },
+  number: { type: String, minlength: 3, required: true },
 });
 
 // Definimos la transformación para cuando un documento de este esquema se convierta a JSON
