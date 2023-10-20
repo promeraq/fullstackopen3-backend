@@ -1,17 +1,8 @@
-require("dotenv").config();
 const express = require("express");
 var morgan = require("morgan");
 const cors = require("cors");
-const Person = require("./models/person");
 
 const app = express();
-app.use(cors());
-// To connect with the frontend (dist is generated with npm run build)
-app.use(express.static("dist"));
-// json-parser
-app.use(express.json());
-
-const PORT = process.env.PORT;
 
 let persons = [
   {
@@ -56,23 +47,32 @@ morgan.format("custom", (tokens, req, res) => {
   return result;
 });
 
+// To connect with the frontend (dist is generated with npm run build)
+app.use(express.static("dist"));
+app.use(cors());
+// json-parser
+app.use(express.json());
 app.use(morgan("tiny"));
 // Respuesta morgan(':method :url :status :res[content-length] - :response-time ms')
 app.use(morgan("custom"));
 
+/* app.get("/", (request, response) => {
+  response.send("<h1>Welcome!</h1>");
+}); */
+
 app.get("/api/persons", (request, response) => {
-  Person.find({}).then((result) => {
-    response.json(result);
-  });
+  response.json(persons);
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  Person.findById(request.params.id).then((person) => {
-    if (!person) {
-      return response.status(404).end();
-    }
-    return response.json(person);
-  });
+  const id = Number(request.params.id);
+  const person = persons.find((person) => person.id === id);
+  if (person) {
+    response.json(person);
+  } else {
+    // end() envía una respuesta sin datos
+    response.status(404).end();
+  }
 });
 
 const generateId = () => {
@@ -81,35 +81,29 @@ const generateId = () => {
 };
 
 app.post("/api/persons", (request, response) => {
+  const id = generateId();
   const body = request.body;
-  console.log("body", body);
-  /*   const found = persons.find((person) => person.name === body.name);
+  const found = persons.find((person) => person.name === body.name);
 
   if (found) {
     return response.status(400).json({
       error: "name must be unique",
     });
-  } */ /* else if ((body && !body.name) || !body.number) {
+  } /* else if ((body && !body.name) || !body.number) {
     return response.status(404).json({
       error: "name or phone are missing",
     });
   } */
 
-  if (body.name === undefined) {
-    return response.status(400).json({ error: "name missing" });
-  } else if (body.number === undefined) {
-    return response.status(400).json({ error: "number missing" });
-  }
-
-  const person = new Person({
+  const person = {
+    id: generateId(),
     name: body.name,
     number: body.number,
-  });
+  };
 
-  /* persons = persons.concat(person); */
-  /*   response.json(persons); */
+  persons = persons.concat(person);
 
-  person.save().then((savedPerson) => response.json(savedPerson));
+  response.json(persons);
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -127,6 +121,7 @@ app.get("/info", (request, response) => {
 });
 
 // Assign http server to app variable
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
