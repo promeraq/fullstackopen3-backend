@@ -13,7 +13,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT;
 
-let persons = [
+/* let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -34,7 +34,7 @@ let persons = [
     name: "Mary Popplendich",
     number: "051-123556",
   },
-];
+]; */
 
 // morgan.format("custom", function)
 morgan.format("custom", (tokens, req, res) => {
