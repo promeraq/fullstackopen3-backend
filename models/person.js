@@ -14,11 +14,14 @@ mongoose
     console.log("error connectiing to MongoDB:", error.message);
   });
 
+// Definimos un esquema para una "person".
+// Un esquema representa la estructura de los documentos dentro de una colección en MongoDB.
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
 });
 
+// Definimos la transformación para cuando un documento de este esquema se convierta a JSON
 personSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
