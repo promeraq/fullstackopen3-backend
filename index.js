@@ -63,11 +63,9 @@ app.get("/info", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  Person.find({})
-    .then((result) => {
-      response.json(result);
-    })
-    .catch((error) => next(error));
+  Person.find({}).then((result) => {
+    response.json(result);
+  });
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
@@ -83,7 +81,7 @@ app.get("/api/persons/:id", (request, response, next) => {
     });
 });
 
-app.post("/api/persons", async (request, response) => {
+app.post("/api/persons", async (request, response, next) => {
   const { name, number } = request.body;
   if (await Person.exists({ name })) {
     return response.status(400).json({ error: "name must be unique" });
@@ -106,7 +104,7 @@ app.post("/api/persons", async (request, response) => {
 
 app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then((result) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => next(error));

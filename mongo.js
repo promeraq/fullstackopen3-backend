@@ -31,7 +31,7 @@ const person = new Person({
 
 if (process.argv.length > 3) {
   person.save().then((result) => {
-    console.log("person saved!");
+    console.log("person saved!", result);
     mongoose.connection.close();
   });
 }

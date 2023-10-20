@@ -81,7 +81,6 @@ const generateId = () => {
 };
 
 app.post("/api/persons", (request, response) => {
-  const id = generateId();
   const body = request.body;
   const found = persons.find((person) => person.name === body.name);
 
